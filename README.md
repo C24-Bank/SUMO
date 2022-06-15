@@ -1,2 +1,2 @@
 # soul
-Scannin with OCR Utility Library
+Scanning with OCR Utility Library
