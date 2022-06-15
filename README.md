@@ -1,2 +1,2 @@
-# soul
-Scanning with OCR Utility Library
+# sumo
+Scanning Utility Module with OCR
