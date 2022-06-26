@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "SUMO"
 include ':app'
 include ':sumox'
+include ':sumo'

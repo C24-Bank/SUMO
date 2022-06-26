@@ -1,4 +1,4 @@
-package c24.sumo
+package c24.sumo_example
 
 import org.junit.Test
 
