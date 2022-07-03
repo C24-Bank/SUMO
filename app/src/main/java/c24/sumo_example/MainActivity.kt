@@ -60,16 +60,15 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun initNavHost() {
         navController = rememberNavController()
-        val scanSumo = Scan.Builder()
-            .setCameraView(CameraView())
-            .build()
+        val scanSumo = ExampleScans().scanWithDefaultSettings.build()
+        val scanSumo2 = ExampleScans().scanExampleReceipt.build()
+
         NavHost(navController = navController!!, startDestination = "exampleStartScreen") {
             composable("exampleStartScreen") { ExampleScreen(navController!!) }
-            composable("cameraViewScreen") { scanSumo.cameraView() }
+            composable("cameraViewScreen") { scanSumo2.cameraView() }
 
         }
     }
-
 }
 
 
@@ -99,6 +98,8 @@ fun ExampleScreen(navController: NavHostController) {
                     context,
                     Manifest.permission.CAMERA
                 ) -> {
+                    launcher.launch(Manifest.permission.CAMERA)
+
                     // Some works that require permission
                     Log.d("ExampleScreen", "Code requires permission")
                 }
