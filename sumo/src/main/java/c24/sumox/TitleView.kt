@@ -7,9 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class TitleView(
     private var width: Dp? = null,
@@ -21,13 +24,15 @@ class TitleView(
     @Composable
     fun createView() {
         setModifier()
-        Text(text = title, textAlign = TextAlign.Center, modifier = modifier!!)
+        Text(text = title, color = Color.White, textAlign = TextAlign.Center, modifier = modifier!!,
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        )
     }
 
     private fun setModifier() {
         if (modifier == null) {
             modifier = Modifier
-                .padding(0.dp)
+                .padding(horizontal= 5.dp)
                 .fillMaxWidth()
 
             modifier = when {

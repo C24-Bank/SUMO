@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
         NavHost(navController = navController!!, startDestination = "exampleStartScreen") {
             composable("exampleStartScreen") { ExampleScreen(navController!!) }
-            composable("cameraViewScreen") { scanSumo2.cameraView() }
+            composable("cameraViewScreen") { scanSumo.cameraView() }
 
         }
     }
