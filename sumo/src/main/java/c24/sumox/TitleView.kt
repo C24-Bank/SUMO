@@ -19,20 +19,29 @@ class TitleView(
     private var height: Dp? = null,
     private var title: String = "Scannen Sie hier Ihr Dokument",
     private var modifier: Modifier? = null,
+    private var isVisible: Boolean = true,
+    private var titleTextAlign: TextAlign? = null
 ) {
 
     @Composable
     fun createView() {
-        setModifier()
-        Text(text = title, color = Color.White, textAlign = TextAlign.Center, modifier = modifier!!,
-            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        )
+        if (isVisible) {
+            setModifier()
+            Text(
+                text = title,
+                color = Color.White,
+                textAlign = titleTextAlign ?: TextAlign.Center,
+                modifier = modifier!!,
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            )
+        }
+
     }
 
     private fun setModifier() {
         if (modifier == null) {
             modifier = Modifier
-                .padding(horizontal= 5.dp)
+                .padding(horizontal = 5.dp)
                 .fillMaxWidth()
 
             modifier = when {

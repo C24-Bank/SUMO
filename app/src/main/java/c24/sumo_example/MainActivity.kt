@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -32,116 +33,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import c24.sumo_example.databinding.MainActivityBinding
 import c24.sumo_example.ui.theme.SUMOTheme
 import c24.sumox.BorderView
 import c24.sumox.CameraView
 import c24.sumox.Scan
 
-class MainActivity : ComponentActivity() {
-    var navController : NavHostController? = null
+class MainActivity : AppCompatActivity() {
 
+    lateinit var binding : MainActivityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
-            SUMOTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    //TODO check if you navigate with non compose
-                    initNavHost()
-                }
-            }
-        }
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
     }
 
-    @Composable
-    fun initNavHost() {
-        navController = rememberNavController()
-        val scanSumo = ExampleScans().scanWithDefaultSettings.build()
-        val scanSumo2 = ExampleScans().scanExampleReceipt.build()
 
-        NavHost(navController = navController!!, startDestination = "exampleStartScreen") {
-            composable("exampleStartScreen") { ExampleScreen(navController!!) }
-            composable("cameraViewScreen") { scanSumo.cameraView() }
-
-        }
-    }
 }
 
-
-
-@Composable
-fun ExampleScreen(navController: NavHostController) {
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission Accepted: Do something
-            Log.d("ExampleScreen", "PERMISSION GRANTED")
-            navController.navigate("cameraViewScreen")
-
-        } else {
-            // Permission Denied: Do something
-            Log.d("ExampleScreen", "PERMISSION DENIED")
-        }
-    }
-    val context = LocalContext.current
-
-    Button(
-        onClick = {
-            // Check permission
-            when (PackageManager.PERMISSION_GRANTED) {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.CAMERA
-                ) -> {
-                    launcher.launch(Manifest.permission.CAMERA)
-
-                    // Some works that require permission
-                    Log.d("ExampleScreen", "Code requires permission")
-                }
-                else -> {
-                    // Asking for permission
-                    launcher.launch(Manifest.permission.CAMERA)
-                }
-            }
-        }
-    ) {
-        Text(text = "Check and Request Permission")
-    }
-}
-
-//@Composable
-//fun Rahmen(height: Dp, width: Dp) {
-//    Canvas(
-//        modifier = Modifier
-//            .padding(20.dp)
-//    ) {
-//        drawRoundRect(
-//            size = Size(width.toPx(), height.toPx()),
-//            color = Color.Red,
-//            style = Stroke(
-//                width = 2.dp.toPx(),
-//                pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-//            ),
-//            cornerRadius = CornerRadius(x = 20f, y = 20f)
-//
-//        )
-//    }
-//}
-//
-//@Composable
-//fun Greeting(name: String) {
-//    Text(text = "Hello $name!")
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    SUMOTheme {
-//        Rahmen(height = 200.dp, width = 300.dp)
-//    }
-//}

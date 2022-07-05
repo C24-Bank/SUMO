@@ -48,13 +48,13 @@ class BorderView(
     private fun setModifier() {
         if (modifier == null) {
             modifier = Modifier
-                .padding(20.dp)
-                .height(height)
+                .padding(bottom= 200.dp,top= 100.dp,start= 20.dp,end= 20.dp)
 
-            modifier = when {
-                width != null -> modifier!!.width(width!!)
-                else -> modifier!!.fillMaxWidth()
-            }
+
+        }
+        modifier = when {
+            width != null -> modifier!!.width(width!!)
+            else -> modifier!!.fillMaxWidth().height(height)
         }
     }
 }

@@ -74,8 +74,7 @@ class CameraView {
     }
 
     //TODO: eigenen ImageAnalyzer erstellen lassen
-    fun Analyzer(): ImageAnalysis {
-
+    private fun Analyzer(): ImageAnalysis {
         val imageAnalyzer = ImageAnalysis.Builder()
             .build()
             .also {
@@ -83,12 +82,11 @@ class CameraView {
                     cameraExecutor, ImageAnalyzer()
                 )
             }
-
         return imageAnalyzer
     }
 
 
-    fun initExecutor(): ExecutorService {
+    private fun initExecutor(): ExecutorService {
         cameraExecutor = Executors.newSingleThreadExecutor()
         return cameraExecutor
     }

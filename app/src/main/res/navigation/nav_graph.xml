@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startFragment">
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="c24.sumo_example.StartFragment"
+        tools:layout="@layout/fragment_start"
+        android:label="Start">
+
+        <action
+            android:id="@+id/action_startFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="c24.sumo_example.ScanFragment"
+        tools:layout="@layout/fragment_scan"
+        android:label="Scan"></fragment>
+</navigation>

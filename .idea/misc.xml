@@ -6,6 +6,13 @@
         <entry key="../../../layout/compose-model-1655629150315.xml" value="0.4320855614973262" />
         <entry key="../../../layout/compose-model-1655710765897.xml" value="0.293048128342246" />
         <entry key="../../../layout/compose-model-1655716726094.xml" value="0.4641711229946524" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.246875" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.37916666666666665" />
+        <entry key="app/src/main/res/layout/fragment_scan.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/fragment_start.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/layout/main_activity.xml" value="0.22760416666666666" />
+        <entry key="sumo/src/main/res/layout/fragment_scan_ui.xml" value="0.22864583333333333" />
       </map>
     </option>
   </component>

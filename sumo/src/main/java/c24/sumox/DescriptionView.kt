@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -22,46 +23,35 @@ class DescriptionView(
     private var title: String = "Beschreibung",
     private var description: String = "Legen Sie das Dokument in den angezeigt Rahmen und fokussieren sie die Kamera um den Scan zu absolvieren",
     private var modifier: Modifier? = null,
+    private var titleTextAlign: TextAlign? = null,
     private var color: Color = Color.White,
     private var closeable: Boolean = false,
+    private var cornerRadius: CornerRadius = CornerRadius(50f, 50f)
 ) {
 
     @Composable
     fun createView() {
         setModifier()
 
-        val cornerRadius = CornerRadius(10f, 10f)
 
-        val path = Path().apply {
-            addRoundRect(
-                RoundRect(
-                    rect = Rect(
-                        offset = Offset(0f, 0f),
-                        size = Size(100f,100f),
-                        ),
-                    topLeft = cornerRadius,
-                    topRight = cornerRadius,
-                )
-            )
-        }
-        Box(modifier = modifier!!) {
+        Box(modifier = modifier!!.fillMaxWidth()) {
             Canvas(modifier!!) {
-                drawRect(color = color, topLeft = Offset(0f,50f))
+                drawRect(color = color, topLeft = Offset(0f, 50f))
                 drawRoundRect(
                     color = color,
-                    cornerRadius = CornerRadius(x = 50.0f,y= 50.0f)
+                    cornerRadius = cornerRadius
                 )
-//                drawPath(path, color)
             }
             Column(
                 modifier!!
-//                    .background(color)
-                    .padding(horizontal = 10.dp)) {
+                    .padding(horizontal = 10.dp)
+            ) {
                 Text(
                     text = title,
                     color = Color.Black,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                    modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    textAlign = titleTextAlign ?: TextAlign.Start
                 )
                 Text(text = description, color = Color.Black)
             }
