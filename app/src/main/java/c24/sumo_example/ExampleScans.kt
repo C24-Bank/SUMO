@@ -21,8 +21,11 @@ class ExampleScans() {
             TitleView(isVisible = false)
         )
         .setBorderView(
+            //TODO: X und Y koordinaten als parameter
+            //Padding weglassen
             BorderView(
                 height = 500.dp,
+                width = 30.dp,
                 color = Color.Blue,
                 modifier = Modifier.padding(20.dp)
             )

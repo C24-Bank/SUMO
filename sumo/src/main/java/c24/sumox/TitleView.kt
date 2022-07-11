@@ -35,7 +35,6 @@ class TitleView(
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
             )
         }
-
     }
 
     private fun setModifier() {

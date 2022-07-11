@@ -21,6 +21,20 @@ class Scan(
     private var composedView: @Composable () -> Unit = {}
     private lateinit var scanUIFragment: Fragment
 
+
+    init {
+        scanUIFragment = ScanUIFragment(this.builder)
+        borderView = { builder.getBorderView().Rahmen() }
+        descriptionView = { builder.getDescriptionView().createView() }
+        titleView = { builder.getTitleView().createView() }
+        composedView = { stitchView() }
+//        stitchView()
+        cameraView = {
+            builder.getCameraView().setCustomView(composedView)
+            builder.getCameraView().StartCamera()
+        }
+    }
+
     class Builder {
         private var borderView = BorderView()
         private var cameraView = CameraView()
@@ -44,20 +58,6 @@ class Scan(
         fun build() = Scan(this).scanUIFragment
         fun buildScan() = Scan(this)
 
-
-    }
-
-    init {
-        scanUIFragment = ScanUIFragment(this.builder)
-        borderView = { builder.getBorderView().Rahmen() }
-        descriptionView = { builder.getDescriptionView().createView() }
-        titleView = { builder.getTitleView().createView() }
-        composedView = { stitchView() }
-//        stitchView()
-        cameraView = {
-            builder.getCameraView().setCustomView(composedView)
-            builder.getCameraView().StartCamera()
-        }
 
     }
 

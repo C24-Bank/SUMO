@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 class ScanFragment : Fragment() {
 
     lateinit var scanModuleFragment : Fragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         buildScan()
@@ -31,6 +32,6 @@ class ScanFragment : Fragment() {
     private fun buildScan() {
         val scanFragment1 = ExampleScans().scanWithDefaultSettings.build()
         val scanFragment2 = ExampleScans().scanExampleReceipt.build()
-        scanModuleFragment = scanFragment2
+        scanModuleFragment = scanFragment1
     }
 }
