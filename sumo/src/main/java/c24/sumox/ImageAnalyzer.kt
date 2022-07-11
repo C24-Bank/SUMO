@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -19,8 +20,8 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
     private val ANALYSIS_DELAY_MS = 1000
     private val INVALID_TIME = -1L
     private var lastAnalysisTime = INVALID_TIME
-    private  var recognizer: TextRecognizer
-
+    private var recognizer: TextRecognizer
+    private var verifier : Verifier? = null
     private fun ByteBuffer.toByteArray(): ByteArray {
         rewind()    // Rewind the buffer to zero
         val data = ByteArray(remaining())
@@ -29,6 +30,12 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
     }
 
     init {
+        //TODO: regex and sample count set manually. Make verifier nullable
+        verifier = Verifier(
+            pattern = Regex("""Code\s\d{10}"""),
+            sampleCount = 3
+        )
+
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
 
@@ -45,7 +52,6 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
             return
         }
         if (bitmapProxy != null) {
-            //TODO: Process Image here
             processImageWithMLKit(bitmapProxy)
         }
         lastAnalysisTime = now;
@@ -94,10 +100,24 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
         recognizer.process(image).addOnSuccessListener { visionText ->
             Log.e("OCR: ", "Success process")
             print(visionText.text)
+            Log.e("OCR: text "," ${visionText.text}")
+            if(verifier != null) {
+                startVerifier(visionText.text)
+            }
 
         }.addOnFailureListener { e ->
             Log.e("OCR: ", "FAILED process")
         }
-
     }
+
+    private fun startVerifier(visionText: String) {
+        if (verifier?.hasVerificationStarted == true) {
+            Log.e("Verifier: (analyzer)", "confirm verification")
+            verifier?.confirmVerification(visionText)
+        } else {
+            Log.e("Verifier: (analyzer)", "start verification")
+            verifier?.startVerification(visionText)
+        }
+    }
+
 }

@@ -18,3 +18,11 @@ Z
 *sumo/src/main/java/c24/sumox/CameraView.kt,7/f/7fd3f01ee02cd58d4e9413e96e931ef5a0d8ea61
 b
 2app/src/main/java/c24/sumo_example/ScanFragment.kt,8/d/8ddfc0f563d4332e65bea8739e43279eaaa1b85a
+^
+.sumo/src/main/java/c24/sumox/ScanUIFragment.kt,4/2/424abcad7450e4e7317cb0ed1578f8d39366398b
+<
+build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
+@
+app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
+A
+sumo/build.gradle,2/e/2e3a8d36883e61fcfbd52d0142cb44bb27eefade
