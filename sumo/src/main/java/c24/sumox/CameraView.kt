@@ -23,7 +23,9 @@ import androidx.core.content.ContextCompat
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class CameraView {
+class CameraView(
+    private var imageAnalyzer: ImageAnalysis.Analyzer
+) {
 
     var cameraExecutor: ExecutorService = initExecutor()
     var view: @Composable () -> Unit = {}
@@ -65,7 +67,8 @@ class CameraView {
         preview.setSurfaceProvider(previewView.surfaceProvider)
 
         //TODO: Here custom view erlauebbn
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()
+            ) {
             AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
             //ToDO: customize UI here
             view()
@@ -79,7 +82,7 @@ class CameraView {
             .build()
             .also {
                 it.setAnalyzer(
-                    cameraExecutor, ImageAnalyzer()
+                    cameraExecutor, imageAnalyzer
                 )
             }
         return imageAnalyzer

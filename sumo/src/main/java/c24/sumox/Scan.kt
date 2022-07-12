@@ -7,7 +7,15 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInRoot
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class Scan(
     var builder: Builder
@@ -19,12 +27,35 @@ class Scan(
     var titleView: @Composable () -> Unit = {}
     var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
-    private lateinit var scanUIFragment: Fragment
 
+    private lateinit var scanUIFragment: Fragment
+    private var borderViewGloballyPositionedModifier: LayoutCoordinates? = null
 
     init {
         scanUIFragment = ScanUIFragment(this.builder)
-        borderView = { builder.getBorderView().Rahmen() }
+        //TODO init functions
+
+        borderView = {
+            builder.getBorderView().Rahmen()
+
+        }
+        GlobalScope.launch {
+            builder.getBorderView().coordinatesFlow.collectLatest {
+                if (it != null) {
+
+                borderViewGloballyPositionedModifier = it
+                    borderViewGloballyPositionedModifier?.let {
+                        builder.setImageAnalyzerCropParameters(
+                            borderViewGloballyPositionedModifier?.positionInRoot()?.x!!.toInt(),
+                            borderViewGloballyPositionedModifier?.positionInRoot()?.y!!.toInt(),
+                            borderViewGloballyPositionedModifier?.size?.width!!.toInt(),
+                            borderViewGloballyPositionedModifier?.size?.height!!.toInt()
+                        )
+                    }
+                }
+            }
+        }
+
         descriptionView = { builder.getDescriptionView().createView() }
         titleView = { builder.getTitleView().createView() }
         composedView = { stitchView() }
@@ -36,8 +67,11 @@ class Scan(
     }
 
     class Builder {
+
+        private var imageAnalyzer = ImageAnalyzer()
+
         private var borderView = BorderView()
-        private var cameraView = CameraView()
+        private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
 
@@ -46,6 +80,11 @@ class Scan(
         fun setDescriptionView(descriptionView: DescriptionView) =
             apply { this.descriptionView = descriptionView }
         fun setTitleView(titleView: TitleView) = apply { this.titleView = titleView }
+        fun setImageAnalyzerCropParameters(x: Int, y: Int, width: Int, height: Int) {
+            imageAnalyzer.setCropParameters(
+                x = x, y = y, width = width, height = height
+            )
+        }
 
         private fun setCameraView(cameraView: CameraView) = apply { this.cameraView = cameraView }
 
@@ -66,7 +105,7 @@ class Scan(
         //Todo: if custom view is given dont do this
 
 //        val scanView =
-            Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
                 titleView()
                 borderView()
