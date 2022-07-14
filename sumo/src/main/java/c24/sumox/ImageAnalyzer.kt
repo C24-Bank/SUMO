@@ -6,6 +6,7 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.compose.ui.layout.positionInRoot
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -40,7 +41,6 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
             pattern = Regex("""Code\s\d{10}"""),
             sampleCount = 3
         )
-
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
 
@@ -49,6 +49,14 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
         cropY = y
         cropHeight = height
         cropWidth = width
+        Log.e(
+            "coords: ",
+            "Crop coords = height: $cropHeight width: $cropWidth "
+        )
+        Log.e(
+            "coords: ",
+            "Crop coords = x: $cropX y: $cropY "
+        )
     }
 
     fun cropBitmap(bitmap: Bitmap): Bitmap? {

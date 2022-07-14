@@ -28,6 +28,8 @@ class Scan(
     var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
 
+    private var customView: (@Composable () -> Unit)? = null
+
     private lateinit var scanUIFragment: Fragment
     private var borderViewGloballyPositionedModifier: LayoutCoordinates? = null
 
@@ -35,29 +37,33 @@ class Scan(
         scanUIFragment = ScanUIFragment(this.builder)
         //TODO init functions
 
-        borderView = {
-            builder.getBorderView().Rahmen()
+        customView = builder.getCustomView()
+        if (customView == null){
+            borderView = {
+                builder.getBorderView().Rahmen()
 
-        }
-        GlobalScope.launch {
-            builder.getBorderView().coordinatesFlow.collectLatest {
-                if (it != null) {
+            }
+            GlobalScope.launch {
+                builder.getBorderView().coordinatesFlow.collectLatest {
+                    if (it != null) {
 
-                borderViewGloballyPositionedModifier = it
-                    borderViewGloballyPositionedModifier?.let {
-                        builder.setImageAnalyzerCropParameters(
-                            borderViewGloballyPositionedModifier?.positionInRoot()?.x!!.toInt(),
-                            borderViewGloballyPositionedModifier?.positionInRoot()?.y!!.toInt(),
-                            borderViewGloballyPositionedModifier?.size?.width!!.toInt(),
-                            borderViewGloballyPositionedModifier?.size?.height!!.toInt()
-                        )
+                        borderViewGloballyPositionedModifier = it
+                        borderViewGloballyPositionedModifier?.let {
+                            builder.setImageAnalyzerCropParameters(
+                                borderViewGloballyPositionedModifier?.positionInRoot()?.x!!.toInt(),
+                                borderViewGloballyPositionedModifier?.positionInRoot()?.y!!.toInt(),
+                                borderViewGloballyPositionedModifier?.size?.width!!.toInt(),
+                                borderViewGloballyPositionedModifier?.size?.height!!.toInt()
+                            )
+                        }
                     }
                 }
             }
+
+            descriptionView = { builder.getDescriptionView().createView() }
+            titleView = { builder.getTitleView().createView() }
         }
 
-        descriptionView = { builder.getDescriptionView().createView() }
-        titleView = { builder.getTitleView().createView() }
         composedView = { stitchView() }
 //        stitchView()
         cameraView = {
@@ -74,6 +80,7 @@ class Scan(
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
+        private var customView: (@Composable () -> Unit)? = null
 
         /* Setters */
         fun setBorderView(borderView: BorderView) = apply { this.borderView = borderView }
@@ -85,6 +92,9 @@ class Scan(
                 x = x, y = y, width = width, height = height
             )
         }
+        fun setCustomView(customView: @Composable () -> Unit = {}) = apply {
+            this.customView = customView
+        }
 
         private fun setCameraView(cameraView: CameraView) = apply { this.cameraView = cameraView }
 
@@ -93,6 +103,7 @@ class Scan(
         fun getCameraView() = cameraView
         fun getDescriptionView() = descriptionView
         fun getTitleView() = titleView
+        fun getCustomView() = customView
 
         fun build() = Scan(this).scanUIFragment
         fun buildScan() = Scan(this)
@@ -104,18 +115,18 @@ class Scan(
     fun stitchView() {
         //Todo: if custom view is given dont do this
 
-//        val scanView =
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(verticalArrangement = Arrangement.SpaceBetween) {
-                titleView()
-                borderView()
-////                Spacer(modifier = Modifier.weight(5f))
-                descriptionView()
+            if (customView == null){
+                Column(verticalArrangement = Arrangement.SpaceBetween) {
+                    titleView()
+                    borderView()
+                    descriptionView()
+                }
+            } else {
+                customView!!()
             }
-        }
 
-//        scanUIFragment = ScanUIFragment(scanView)
-//        scanUIFragment
+        }
     }
 
 

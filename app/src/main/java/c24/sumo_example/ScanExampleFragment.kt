@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.fragment.app.FragmentManager
 
 
-class ScanFragment : Fragment() {
+class ScanExampleFragment : Fragment() {
 
     lateinit var scanModuleFragment : Fragment
 
@@ -32,6 +32,7 @@ class ScanFragment : Fragment() {
     private fun buildScan() {
         val scanFragment1 = ExampleScans().scanWithDefaultSettings.build()
         val scanFragment2 = ExampleScans().scanExampleReceipt.build()
-        scanModuleFragment = scanFragment1
+        val scanFragment3 = ExampleScans().scanWithCustomView.build()
+        scanModuleFragment = scanFragment3
     }
 }

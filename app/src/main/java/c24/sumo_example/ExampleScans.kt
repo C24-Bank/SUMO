@@ -1,5 +1,7 @@
 package c24.sumo_example
 
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
@@ -9,12 +11,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import c24.sumox.*
 
 class ExampleScans() {
 
     val scanWithDefaultSettings = Scan.Builder()
-
+    val scanWithCustomView = Scan.Builder().setCustomView {
+        Text(
+            text = "Hier könnte Ihre CustomView stehen.",
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        )
+    }
 
     val scanExampleReceipt = Scan.Builder()
         .setTitleView(
@@ -24,8 +35,8 @@ class ExampleScans() {
             //TODO: X und Y koordinaten als parameter
             //Padding weglassen
             BorderView(
-                height = 500.dp,
-                width = 30.dp,
+                height = 600.dp,
+                width = 300.dp,
                 color = Color.Blue,
                 modifier = Modifier.padding(20.dp)
             )

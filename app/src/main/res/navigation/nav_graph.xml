@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="c24.sumo_example.StartFragment"
+        android:name="c24.sumo_example.StartExampleFragment"
         tools:layout="@layout/fragment_start"
         android:label="Start">
 
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/scanFragment"
-        android:name="c24.sumo_example.ScanFragment"
+        android:name="c24.sumo_example.ScanExampleFragment"
         tools:layout="@layout/fragment_scan"
         android:label="Scan"></fragment>
 </navigation>

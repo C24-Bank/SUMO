@@ -36,51 +36,44 @@ class BorderView(
 ) {
 
 
-    var coordinates: LayoutCoordinates? = null
     private val coordFlow = MutableStateFlow<LayoutCoordinates?>(null)
     val coordinatesFlow = coordFlow.asSharedFlow()
-
 
 
     @Composable
     fun Rahmen() {
 
-            //check if there is a custom width
-            setModifier()
+        //check if there is a custom width
+        setModifier()
 
-            modifier?.let {
-                // set the position here to crop the bitmap later via scan class
-                it.onGloballyPositioned { coords ->
-                    coordinates = coords
-                }
 
-                Canvas(
-                    modifier = it.onGloballyPositioned { layoutcoords ->
-                        Log.e(
-                            "coords: ",
-                            "Layout coords = height: ${layoutcoords.size.height} width: ${layoutcoords.size.width} "
-                        )
-                        Log.e(
-                            "coords: ",
-                            "Layout coords = height: ${layoutcoords.positionInRoot().x} width: ${layoutcoords.positionInRoot().y} "
-                        )
-                        coordFlow.value = layoutcoords
-                        coordinates = layoutcoords
-                    }
-                ) {
 
-                    drawRoundRect(
-                        //            size = Size(width.toPx(), height.toPx()),
-                        color = color,
-                        style = Stroke(
-                            width = 2.dp.toPx(),
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-                        ),
-                        cornerRadius = CornerRadius(x = 20f, y = 20f)
+            Canvas(
+                modifier = modifier!!.onGloballyPositioned { layoutcoords ->
+                    Log.e(
+                        "coords: ",
+                        "Layout coords = height: ${layoutcoords.size.height} width: ${layoutcoords.size.width} "
                     )
+                    Log.e(
+                        "coords: ",
+                        "Layout coords = x: ${layoutcoords.positionInRoot().x} y: ${layoutcoords.positionInRoot().y} "
+                    )
+                    coordFlow.value = layoutcoords
                 }
+            ) {
 
-        }
+                drawRoundRect(
+                    //            size = Size(width.toPx(), height.toPx()),
+                    color = color,
+                    style = Stroke(
+                        width = 2.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                    ),
+                    cornerRadius = CornerRadius(x = 20f, y = 20f)
+                )
+            }
+
+
     }
 
     private fun setModifier() {
@@ -88,14 +81,13 @@ class BorderView(
             modifier = Modifier
                 .padding(bottom = 200.dp, top = 100.dp, start = 20.dp, end = 20.dp)
 
-
         }
         modifier = when {
             width != null -> modifier!!.width(width!!)
             else -> modifier!!
                 .fillMaxWidth()
-                .height(height)
         }
+        modifier = modifier!!.height(height)
     }
 }
 

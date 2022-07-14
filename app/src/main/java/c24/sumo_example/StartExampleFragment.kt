@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import c24.sumo_example.databinding.FragmentStartBinding
 
-class StartFragment : Fragment() {
+class StartExampleFragment : Fragment() {
 
     private lateinit var binding: FragmentStartBinding
     override fun onCreate(savedInstanceState: Bundle?) {
