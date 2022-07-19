@@ -17,6 +17,8 @@ import c24.sumox.*
 class ExampleScans() {
 
     val scanWithDefaultSettings = Scan.Builder()
+
+
     val scanWithCustomView = Scan.Builder().setCustomView {
         Text(
             text = "Hier könnte Ihre CustomView stehen.",
@@ -35,7 +37,7 @@ class ExampleScans() {
             //TODO: X und Y koordinaten als parameter
             //Padding weglassen
             BorderView(
-                height = 600.dp,
+                height = 500.dp,
                 width = 300.dp,
                 color = Color.Blue,
                 modifier = Modifier.padding(20.dp)

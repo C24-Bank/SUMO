@@ -1,17 +1,19 @@
 package c24.sumox
 
+import android.content.res.Resources
 import android.graphics.*
 import android.media.Image
 import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.compose.ui.layout.positionInRoot
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
@@ -22,18 +24,20 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
     private val INVALID_TIME = -1L
     private var lastAnalysisTime = INVALID_TIME
     private var recognizer: TextRecognizer
-    private var verifier: Verifier? = null
+    var verifier: Verifier? = null
     private fun ByteBuffer.toByteArray(): ByteArray {
         rewind()    // Rewind the buffer to zero
         val data = ByteArray(remaining())
         get(data)   // Copy the buffer into a byte array
         return data // Return the byte array
     }
+
     // set these to crop the bitmap to only the border view captured image
-    var cropX : Int? = null
-    var cropY : Int? = null
-    var cropHeight : Int? = null
-    var cropWidth : Int? = null
+    var cropX: Int? = null
+    var cropY: Int? = null
+    var cropHeight: Int? = null
+    var cropWidth: Int? = null
+
 
     init {
         //TODO: regex and sample count set manually. Make verifier nullable
@@ -41,6 +45,7 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
             pattern = Regex("""Code\s\d{10}"""),
             sampleCount = 3
         )
+
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
 
@@ -60,7 +65,8 @@ class ImageAnalyzer : ImageAnalysis.Analyzer {
     }
 
     fun cropBitmap(bitmap: Bitmap): Bitmap? {
-        var croppedBitmap : Bitmap? = null
+        var croppedBitmap: Bitmap? = null
+        Log.e("bitmapOP: ", "$bitmap")
         cropX?.let {
             croppedBitmap =
                 Bitmap.createBitmap(

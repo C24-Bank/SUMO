@@ -1,6 +1,9 @@
 package c24.sumox
 
 import android.util.Log
+import androidx.compose.ui.layout.LayoutCoordinates
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class Verifier(
     private val pattern: Regex,
@@ -17,6 +20,9 @@ class Verifier(
     // true when sampleCount amount was hit in a row
     private var fullyVerified: Boolean = false
 
+    private val verificationSamplesFlow = MutableStateFlow<Int>(0)
+    val samplesFlow = verificationSamplesFlow.asSharedFlow()
+
     fun startVerification(recognizedText: String) {
         // check if pattern was found
         var result = pattern.containsMatchIn(recognizedText)
@@ -26,8 +32,12 @@ class Verifier(
         if (result) {
             recognizedMatch = setRecognizedMatch(recognizedText)
             hasVerificationStarted = true
+            verificationSamplesFlow.value = 1
             // loop until SampleCount matches in a row are hit
             Log.e("Verifier: ", "Match string: $recognizedMatch")
+        }else {
+            verificationSamplesFlow.value = 0
+
         }
     }
 
@@ -43,6 +53,7 @@ class Verifier(
         } else {
             resetVerfication()
         }
+        verificationSamplesFlow.value = verificationCount
     }
 
     private fun resetVerfication() {

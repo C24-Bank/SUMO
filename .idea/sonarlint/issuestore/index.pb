@@ -10,8 +10,6 @@ Q
 !sumo/src/main/AndroidManifest.xml,5/7/57e3ecfde2a18e5f859ed5c0e29c80a3dfd37b1b
 b
 2app/src/main/java/c24/sumo_example/MainActivity.kt,0/4/04163bdc7ebc343a7a5c4bb0c67e51be9681498a
-^
-.sumo/src/main/java/c24/sumox/ScanUIFragment.kt,4/2/424abcad7450e4e7317cb0ed1578f8d39366398b
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
 @
@@ -22,3 +20,7 @@ S
 #.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
 Z
 *sumo/src/main/java/c24/sumox/CameraView.kt,7/f/7fd3f01ee02cd58d4e9413e96e931ef5a0d8ea61
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
+_
+/sumo/src/main/java/c24/sumox/DescriptionView.kt,2/8/285d9f8b5f94c4d58cfc5e8eca4cf9ef42eab830

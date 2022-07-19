@@ -28,6 +28,8 @@ class Scan(
     var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
 
+    private  var feedbackHelper: FeedbackHelper
+
     private var customView: (@Composable () -> Unit)? = null
 
     private lateinit var scanUIFragment: Fragment
@@ -37,8 +39,9 @@ class Scan(
         scanUIFragment = ScanUIFragment(this.builder)
         //TODO init functions
 
+
         customView = builder.getCustomView()
-        if (customView == null){
+        if (customView == null) {
             borderView = {
                 builder.getBorderView().Rahmen()
 
@@ -70,6 +73,8 @@ class Scan(
             builder.getCameraView().setCustomView(composedView)
             builder.getCameraView().StartCamera()
         }
+        feedbackHelper = builder.getFeedbackHelper()
+
     }
 
     class Builder {
@@ -81,17 +86,19 @@ class Scan(
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
         private var customView: (@Composable () -> Unit)? = null
-
+        private var feedbackHelper = FeedbackHelper(imageAnalyzer,borderView)
         /* Setters */
         fun setBorderView(borderView: BorderView) = apply { this.borderView = borderView }
         fun setDescriptionView(descriptionView: DescriptionView) =
             apply { this.descriptionView = descriptionView }
+
         fun setTitleView(titleView: TitleView) = apply { this.titleView = titleView }
         fun setImageAnalyzerCropParameters(x: Int, y: Int, width: Int, height: Int) {
             imageAnalyzer.setCropParameters(
                 x = x, y = y, width = width, height = height
             )
         }
+
         fun setCustomView(customView: @Composable () -> Unit = {}) = apply {
             this.customView = customView
         }
@@ -99,6 +106,7 @@ class Scan(
         private fun setCameraView(cameraView: CameraView) = apply { this.cameraView = cameraView }
 
         /* Getters */
+        fun getFeedbackHelper() = feedbackHelper
         fun getBorderView() = borderView
         fun getCameraView() = cameraView
         fun getDescriptionView() = descriptionView
@@ -116,7 +124,7 @@ class Scan(
         //Todo: if custom view is given dont do this
 
         Box(modifier = Modifier.fillMaxSize()) {
-            if (customView == null){
+            if (customView == null) {
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
                     titleView()
                     borderView()

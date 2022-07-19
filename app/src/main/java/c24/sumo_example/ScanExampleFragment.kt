@@ -33,6 +33,6 @@ class ScanExampleFragment : Fragment() {
         val scanFragment1 = ExampleScans().scanWithDefaultSettings.build()
         val scanFragment2 = ExampleScans().scanExampleReceipt.build()
         val scanFragment3 = ExampleScans().scanWithCustomView.build()
-        scanModuleFragment = scanFragment3
+        scanModuleFragment = scanFragment1
     }
 }

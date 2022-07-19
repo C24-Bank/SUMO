@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -35,43 +38,49 @@ class BorderView(
 //TODO: drawRoundRect parameter
 ) {
 
+    private val borderColor = MutableStateFlow(Color.Red)
 
     private val coordFlow = MutableStateFlow<LayoutCoordinates?>(null)
     val coordinatesFlow = coordFlow.asSharedFlow()
 
 
+    fun changeColor(color: Color) {
+            borderColor.value = color
+
+    }
+
     @Composable
     fun Rahmen() {
-
+        val myColor by borderColor.collectAsState()
         //check if there is a custom width
         setModifier()
 
 
 
-            Canvas(
-                modifier = modifier!!.onGloballyPositioned { layoutcoords ->
-                    Log.e(
-                        "coords: ",
-                        "Layout coords = height: ${layoutcoords.size.height} width: ${layoutcoords.size.width} "
-                    )
-                    Log.e(
-                        "coords: ",
-                        "Layout coords = x: ${layoutcoords.positionInRoot().x} y: ${layoutcoords.positionInRoot().y} "
-                    )
-                    coordFlow.value = layoutcoords
-                }
-            ) {
-
-                drawRoundRect(
-                    //            size = Size(width.toPx(), height.toPx()),
-                    color = color,
-                    style = Stroke(
-                        width = 2.dp.toPx(),
-                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-                    ),
-                    cornerRadius = CornerRadius(x = 20f, y = 20f)
+        Canvas(
+            modifier = modifier!!.onGloballyPositioned { layoutcoords ->
+                Log.e(
+                    "coords: ",
+                    "Layout coords = height: ${layoutcoords.size.height} width: ${layoutcoords.size.width} "
                 )
+                Log.e(
+                    "coords: ",
+                    "Layout coords = x: ${layoutcoords.positionInRoot().x} y: ${layoutcoords.positionInRoot().y} "
+                )
+                coordFlow.value = layoutcoords
             }
+        ) {
+
+            drawRoundRect(
+                //            size = Size(width.toPx(), height.toPx()),
+                color = myColor,
+                style = Stroke(
+                    width = 2.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                ),
+                cornerRadius = CornerRadius(x = 20f, y = 20f)
+            )
+        }
 
 
     }
