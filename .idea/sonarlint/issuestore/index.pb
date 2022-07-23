@@ -18,8 +18,6 @@ A
 sumo/build.gradle,2/e/2e3a8d36883e61fcfbd52d0142cb44bb27eefade
 S
 #.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
-Z
-*sumo/src/main/java/c24/sumox/CameraView.kt,7/f/7fd3f01ee02cd58d4e9413e96e931ef5a0d8ea61
 P
  app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
 _

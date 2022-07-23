@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 
 
-class ScanUIFragment(
+internal class ScanUIFragment(
     private val scanView : Scan.Builder
 ) : Fragment(R.layout.fragment_scan_ui) {
 

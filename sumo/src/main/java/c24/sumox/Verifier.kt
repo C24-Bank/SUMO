@@ -5,7 +5,7 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class Verifier(
+internal class Verifier(
     private val pattern: Regex,
     private val sampleCount: Int
 ) {

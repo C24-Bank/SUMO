@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
-class ImageAnalyzer : ImageAnalysis.Analyzer {
+internal class ImageAnalyzer : ImageAnalysis.Analyzer {
     //TODO: Check if needed here what
     var lastAnalyzedTimestamp = 0L
     private val ANALYSIS_DELAY_MS = 1000

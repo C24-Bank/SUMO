@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class CameraView(
+internal class CameraView(
     private var imageAnalyzer: ImageAnalysis.Analyzer
 ) {
 
