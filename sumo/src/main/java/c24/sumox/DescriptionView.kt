@@ -24,6 +24,7 @@ class DescriptionView(
     private var description: String = "Legen Sie das Dokument in den angezeigt Rahmen und fokussieren sie die Kamera um den Scan zu absolvieren",
     private var modifier: Modifier? = null,
     private var titleTextAlign: TextAlign? = null,
+    private var descriptionTextAlign: TextAlign? = null,
     private var color: Color = Color.White,
     private var closeable: Boolean = false,
     private var cornerRadius: CornerRadius = CornerRadius(50f, 50f)
@@ -49,11 +50,17 @@ class DescriptionView(
                 Text(
                     text = title,
                     color = Color.Black,
-                    modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .fillMaxWidth(),
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     textAlign = titleTextAlign ?: TextAlign.Start
                 )
-                Text(text = description, color = Color.Black)
+                Text(
+                    text = description,
+                    color = Color.Black,
+                    textAlign = descriptionTextAlign ?: TextAlign.Start
+                )
             }
         }
     }
