@@ -6,7 +6,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-internal class FeedbackHelper(imageAnalyzer: ImageAnalyzer, borderView: BorderView) {
+class FeedbackHelper internal constructor(imageAnalyzer: ImageAnalyzer, borderView: BorderView) {
+
 
 
     init {

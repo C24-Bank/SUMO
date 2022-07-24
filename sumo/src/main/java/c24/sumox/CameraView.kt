@@ -1,6 +1,7 @@
 package c24.sumox
 
 import android.content.ContentValues
+import android.content.Context
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -9,21 +10,18 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-internal class CameraView(
+class CameraView(
     private var imageAnalyzer: ImageAnalysis.Analyzer
 ) {
 
@@ -34,19 +32,10 @@ internal class CameraView(
         this.view = customView
     }
 
-    @Composable
-    fun StartCamera() {
-        val context = LocalContext.current
+    private fun setupAnalyzerPrerequisites(context: Context, lifecycleOwner: LifecycleOwner,preview: Preview){
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-        val lifecycleOwner = LocalLifecycleOwner.current
-//        val imageCapture: ImageCapture = remember {
-//            ImageCapture.Builder().build()
-//        }
-        //TODO: rename variables
-        val preview = Preview.Builder().build()
-//        val previewView = remember { PreviewView(context) }
+
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-        val previewView = remember { PreviewView(context) }
         cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -63,6 +52,17 @@ internal class CameraView(
                 Log.e(ContentValues.TAG, "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(context))
+
+    }
+    @Composable
+    fun StartCamera() {
+       val context = LocalContext.current
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        //TODO test if this works
+        val preview = Preview.Builder().build()
+        val previewView = remember { PreviewView(context) }
+        setupAnalyzerPrerequisites(context, lifecycleOwner,preview)
 
         preview.setSurfaceProvider(previewView.surfaceProvider)
 

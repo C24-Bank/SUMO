@@ -23,6 +23,12 @@ internal class Verifier(
     private val verificationSamplesFlow = MutableStateFlow<Int>(0)
     val samplesFlow = verificationSamplesFlow.asSharedFlow()
 
+    private val mutableVerifiedTextFlow = MutableStateFlow<String?>(null)
+    val verifiedTextFlow = mutableVerifiedTextFlow.asSharedFlow()
+
+    private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
+    val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
+
     fun startVerification(recognizedText: String) {
         // check if pattern was found
         var result = pattern.containsMatchIn(recognizedText)
@@ -49,7 +55,12 @@ internal class Verifier(
             verificationCount++
             Log.e("Verifier: ","verifcation count -> $verificationCount")
             // verification is done when verifcation equals given sample count
-            if (verificationCount >= sampleCount) fullyVerified = true
+            if (verificationCount >= sampleCount) {
+                mutableVerifiedTextFlow.value = recognizedMatch
+//                Log.e("exampleApp","verifier: ${mutableVerifiedTextFlow.value}")
+                fullyVerified = true
+                mutableIsFullyVerifiedFlow.value = true
+            }
         } else {
             resetVerfication()
         }
@@ -59,6 +70,8 @@ internal class Verifier(
     private fun resetVerfication() {
         verificationCount = 0
         hasVerificationStarted = false
+        mutableIsFullyVerifiedFlow.value = false
+        fullyVerified = false
     }
 
 

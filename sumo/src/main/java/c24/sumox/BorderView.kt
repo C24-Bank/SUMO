@@ -34,6 +34,7 @@ class BorderView(
     private var width: Dp? = null,
     private var height: Dp = 200.dp,
     private var color: Color = Color.Red,
+    private var style: Stroke?= null,
     private var modifier: Modifier? = null
 //TODO: drawRoundRect parameter
 ) {

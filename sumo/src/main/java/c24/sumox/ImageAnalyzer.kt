@@ -12,6 +12,8 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -24,7 +26,11 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
     private val INVALID_TIME = -1L
     private var lastAnalysisTime = INVALID_TIME
     private var recognizer: TextRecognizer
-    var verifier: Verifier? = null
+    lateinit var  verifier: Verifier
+
+    private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
+    val recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
+
     private fun ByteBuffer.toByteArray(): ByteArray {
         rewind()    // Rewind the buffer to zero
         val data = ByteArray(remaining())
@@ -43,7 +49,7 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         //TODO: regex and sample count set manually. Make verifier nullable
         verifier = Verifier(
             pattern = Regex("""Code\s\d{10}"""),
-            sampleCount = 3
+            sampleCount = 2
         )
 
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -145,8 +151,8 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         val image = InputImage.fromBitmap(bitmap, 0)
         recognizer.process(image).addOnSuccessListener { visionText ->
             Log.e("OCR: ", "Success process")
-            print(visionText.text)
             Log.e("OCR: text ", " ${visionText.text}")
+            setAllRecognizedText(visionText.text)
             if (verifier != null) {
                 startVerifier(visionText.text)
             }
@@ -156,6 +162,10 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         }
     }
 
+    fun setAllRecognizedText(text: String){
+        mutableRecognizedTextFlow.value = text
+//        Log.e("ExampleApp","Analyzer: ${mutableRecognizedTextFlow.value }")
+    }
     private fun startVerifier(visionText: String) {
         if (verifier?.hasVerificationStarted == true) {
             Log.e("Verifier: (analyzer)", "confirm verification")

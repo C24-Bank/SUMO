@@ -1,38 +1,68 @@
 package c24.sumo_example
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Composable
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import c24.sumox.ScanUIFragment
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class ScanExampleFragment : Fragment() {
 
-    lateinit var scanModuleFragment : Fragment
+    lateinit var scanModuleFragment: ScanUIFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         buildScan()
+
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        buildScan()
+        lifecycleScope.launch {
+            scanModuleFragment.fetchScanData(this)
+
+        }
+        lifecycleScope.launch {
+
+            scanModuleFragment.recognizedTextFlow.collectLatest {
+                Log.e("ExampleApp:", "collected Text : $it")
+            }
+        }
+        lifecycleScope.launch {
+            scanModuleFragment.verifiedTextFlow.collectLatest {
+                Log.e("ExampleApp:", "verified Text : $it")
+            }
+        }
+
+        lifecycleScope.launch {
+            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
+                Log.e("ExampleApp:", "isfully verified : $it")
+            }
+
+        }
+
+
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.scanFragmentContainer,scanModuleFragment).commit()
+        transaction.replace(R.id.scanFragmentContainer, scanModuleFragment).commit()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scan, container, false)
     }
 
     private fun buildScan() {
-        val scanFragment1 = ExampleScans().scanWithDefaultSettings.build()
-        val scanFragment2 = ExampleScans().scanExampleReceipt.build()
-        val scanFragment3 = ExampleScans().scanWithCustomView.build()
-        scanModuleFragment = scanFragment1
+
+        val scanFragment1 = ExampleScans().scanWithDefaultSettings
+        val scanFragment2 = ExampleScans().scanExampleReceipt
+        val scanFragment3 = ExampleScans().scanWithCustomView
+
+        scanModuleFragment = scanFragment1.build() as ScanUIFragment
     }
 }

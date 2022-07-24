@@ -12,15 +12,13 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.layout.positionInRoot
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class Scan(
     var builder: Builder
 ) {
-
 
     var borderView: @Composable () -> Unit = {}
     var cameraView: @Composable () -> Unit = {}
@@ -41,6 +39,7 @@ class Scan(
 
 
         customView = builder.getCustomView()
+        feedbackHelper = builder.getFeedbackHelper()
         if (customView == null) {
             borderView = {
                 builder.getBorderView().Rahmen()
@@ -73,20 +72,23 @@ class Scan(
             builder.getCameraView().setCustomView(composedView)
             builder.getCameraView().StartCamera()
         }
-        feedbackHelper = builder.getFeedbackHelper()
+
 
     }
 
     class Builder {
 
         private var imageAnalyzer = ImageAnalyzer()
-
+        // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
         private var customView: (@Composable () -> Unit)? = null
+        // -------- Logic ---------
         private var feedbackHelper = FeedbackHelper(imageAnalyzer,borderView)
+        private var scanLogic = ScanLogic(imageAnalyzer,imageAnalyzer.verifier)
+
         /* Setters */
         fun setBorderView(borderView: BorderView) = apply { this.borderView = borderView }
         fun setDescriptionView(descriptionView: DescriptionView) =
@@ -107,14 +109,17 @@ class Scan(
 
         /* Getters */
         fun getFeedbackHelper() = feedbackHelper
+        internal fun getScanLogic() = scanLogic
+
         fun getBorderView() = borderView
         fun getCameraView() = cameraView
         fun getDescriptionView() = descriptionView
         fun getTitleView() = titleView
         fun getCustomView() = customView
 
+
         fun build() = Scan(this).scanUIFragment
-        fun buildScan() = Scan(this)
+        fun createScanObject() = Scan(this)
 
 
     }
