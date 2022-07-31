@@ -20,10 +20,10 @@ class Scan(
     var builder: Builder
 ) {
 
-    var borderView: @Composable () -> Unit = {}
+    private var borderView: @Composable () -> Unit = {}
     var cameraView: @Composable () -> Unit = {}
-    var titleView: @Composable () -> Unit = {}
-    var descriptionView: @Composable () -> Unit = {}
+    private var titleView: @Composable () -> Unit = {}
+    private var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
 
     private  var feedbackHelper: FeedbackHelper

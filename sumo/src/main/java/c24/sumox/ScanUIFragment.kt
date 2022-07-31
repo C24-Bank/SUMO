@@ -17,18 +17,20 @@ import kotlinx.coroutines.launch
 
 
 class ScanUIFragment(
-    private val scanView: Scan.Builder
+    private val scanView: Scan.Builder,
 ) : Fragment(R.layout.fragment_scan_ui) {
 
+    private val scanLogic = scanView.getScanLogic()
+
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
+
     var recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
-
     private val mutableVerifiedTextFlow = MutableStateFlow<String?>(null)
+
     var verifiedTextFlow = mutableVerifiedTextFlow.asSharedFlow()
-
     private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
-    val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
 
+    val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,8 +45,48 @@ class ScanUIFragment(
         }
     }
 
+    fun fetchRecognizedText(lifecycleCoroutineScope: CoroutineScope){
+        lifecycleCoroutineScope.launch {
+            scanLogic.apply {
+                collectRecognizedText(this@launch)
+                collectedTextFlow.collectLatest {
+                    mutableRecognizedTextFlow.value = it
+//                    Log.e("ExampleApp","Scanui fragment text: $it")
+                }
+
+
+            }
+
+        }
+    }
+    fun fetchConfirmedText(lifecycleCoroutineScope: CoroutineScope){
+        lifecycleCoroutineScope.launch {
+            scanLogic.apply {
+                collectVerifiedText(this@launch)
+
+                confirmedTextFlow.collectLatest {
+                    mutableVerifiedTextFlow.value = it
+//                    Log.e("ExampleApp", "Scanui fragment verified code: $it")
+
+                }
+            }
+        }
+    }
+    fun fetchVerificationStatus(lifecycleCoroutineScope: CoroutineScope){
+        lifecycleCoroutineScope.launch {
+            scanLogic.apply {
+                collectIsFullyVerifiedStatus(this@launch)
+
+                isFullyVerifiedFlow.collectLatest {
+                    mutableIsFullyVerifiedFlow.value = it
+//                    Log.e("ExampleApp", "Scanui fragment verified: $it")
+
+                }
+            }
+        }
+    }
+
     fun fetchScanData(lifecycleCoroutineScope: CoroutineScope) {
-        val scanLogic = scanView.getScanLogic()
         lifecycleCoroutineScope.launch {
             scanLogic.apply {
                 collectRecognizedText(this@launch)
@@ -69,17 +111,17 @@ class ScanUIFragment(
                 }
             }
         }
-//        lifecycleCoroutineScope.launch {
-//            scanLogic.apply {
-//                collectIsFullyVerifiedStatus(this@launch)
-//
-//                isFullyVerifiedFlow.collectLatest {
-//                    mutableIsFullyVerifiedFlow.value = it
-////                    Log.e("ExampleApp", "Scanui fragment verified: $it")
-//
-//                }
-//            }
-//        }
+        lifecycleCoroutineScope.launch {
+            scanLogic.apply {
+                collectIsFullyVerifiedStatus(this@launch)
+
+                isFullyVerifiedFlow.collectLatest {
+                    mutableIsFullyVerifiedFlow.value = it
+//                    Log.e("ExampleApp", "Scanui fragment verified: $it")
+
+                }
+            }
+        }
 
 
 

@@ -27,23 +27,27 @@ class ScanExampleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+//        lifecycleScope.launch {
+//            scanModuleFragment.fetchScanData(this)
+//
+//        }
         lifecycleScope.launch {
-            scanModuleFragment.fetchScanData(this)
-
-        }
-        lifecycleScope.launch {
+            scanModuleFragment.fetchRecognizedText(this)
 
             scanModuleFragment.recognizedTextFlow.collectLatest {
                 Log.e("ExampleApp:", "collected Text : $it")
             }
         }
         lifecycleScope.launch {
+            scanModuleFragment.fetchConfirmedText(this)
+
             scanModuleFragment.verifiedTextFlow.collectLatest {
                 Log.e("ExampleApp:", "verified Text : $it")
             }
         }
 
         lifecycleScope.launch {
+            scanModuleFragment.fetchVerificationStatus(this)
             scanModuleFragment.isFullyVerifiedFlow.collectLatest {
                 Log.e("ExampleApp:", "isfully verified : $it")
             }
