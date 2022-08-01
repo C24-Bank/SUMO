@@ -6,23 +6,27 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class FeedbackHelper internal constructor(imageAnalyzer: ImageAnalyzer, borderView: BorderView) {
+class FeedbackHelper internal constructor(
+    private val imageAnalyzer: ImageAnalyzer,
+    private val borderView: BorderView
+) {
 
 
-
-    init {
+    private fun startFeedback() {
         GlobalScope.launch {
 
             imageAnalyzer.verifier?.samplesFlow?.collectLatest {
-                Log.e("Feedbackhelper:" ," collected: $it")
+                Log.e("Feedbackhelper:", " collected: $it")
                 when (it) {
                     0 -> borderView.changeColor(Color.Red)
                     1 -> borderView.changeColor(Color.Yellow)
                     2 -> borderView.changeColor(Color.Green)
                 }
             }
-
         }
+    }
 
+    init {
+        startFeedback()
     }
 }
