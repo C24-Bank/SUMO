@@ -20,7 +20,7 @@ internal class Verifier(
     // true when sampleCount amount was hit in a row
     private var fullyVerified: Boolean = false
 
-    private val verificationSamplesFlow = MutableStateFlow<Int>(0)
+    private val verificationSamplesFlow = MutableStateFlow<Int>(-1)
     val samplesFlow = verificationSamplesFlow.asSharedFlow()
 
     private val mutableVerifiedTextFlow = MutableStateFlow<String?>(null)
@@ -41,9 +41,11 @@ internal class Verifier(
             verificationSamplesFlow.value = 1
             // loop until SampleCount matches in a row are hit
             Log.e("Verifier: ", "Match string: $recognizedMatch")
-        }else {
-            verificationSamplesFlow.value = 0
+        } else {
+            if(verificationSamplesFlow.value >= 1){
 
+                verificationSamplesFlow.value = 0
+            }
         }
     }
 

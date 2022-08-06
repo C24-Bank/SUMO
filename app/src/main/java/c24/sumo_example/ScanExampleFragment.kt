@@ -35,21 +35,28 @@ class ScanExampleFragment : Fragment() {
             scanModuleFragment.fetchRecognizedText(this)
 
             scanModuleFragment.recognizedTextFlow.collectLatest {
-                Log.e("ExampleApp:", "collected Text : $it")
+//                Log.e("ExampleApp:", "collected Text : $it")
             }
         }
         lifecycleScope.launch {
             scanModuleFragment.fetchConfirmedText(this)
 
             scanModuleFragment.verifiedTextFlow.collectLatest {
-                Log.e("ExampleApp:", "verified Text : $it")
+//                Log.e("ExampleApp:", "verified Text : $it")
             }
         }
 
         lifecycleScope.launch {
             scanModuleFragment.fetchVerificationStatus(this)
             scanModuleFragment.isFullyVerifiedFlow.collectLatest {
-                Log.e("ExampleApp:", "isfully verified : $it")
+//                Log.e("ExampleApp:", "isfully verified : $it")
+            }
+
+        }
+        lifecycleScope.launch {
+            scanModuleFragment.fetchVerificationCountStatus(this)
+            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
+//                Log.e("ExampleApp/feedback:", "verifications tatus : $it")
             }
 
         }

@@ -79,15 +79,16 @@ class Scan(
     class Builder {
 
         private var imageAnalyzer = ImageAnalyzer()
+        // -------- Logic ---------
+        private var feedbackHelper = FeedbackHelper(imageAnalyzer)
+        private var scanLogic = ScanLogic(imageAnalyzer,imageAnalyzer.verifier)
         // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
         private var customView: (@Composable () -> Unit)? = null
-        // -------- Logic ---------
-        private var feedbackHelper = FeedbackHelper(imageAnalyzer,borderView)
-        private var scanLogic = ScanLogic(imageAnalyzer,imageAnalyzer.verifier)
+
 
         /* Setters */
         fun setBorderView(borderView: BorderView) = apply { this.borderView = borderView }

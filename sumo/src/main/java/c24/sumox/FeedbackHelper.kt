@@ -2,31 +2,26 @@ package c24.sumox
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class FeedbackHelper internal constructor(
     private val imageAnalyzer: ImageAnalyzer,
-    private val borderView: BorderView
 ) {
+    private val verificationSamplesFlow = MutableStateFlow<Int>(-1)
+    val samplesFlow = verificationSamplesFlow.asSharedFlow()
 
-
-    private fun startFeedback() {
-        GlobalScope.launch {
-
-            imageAnalyzer.verifier?.samplesFlow?.collectLatest {
+    fun startFeedback(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
+            imageAnalyzer.verifier.samplesFlow.collectLatest {
                 Log.e("Feedbackhelper:", " collected: $it")
-                when (it) {
-                    0 -> borderView.changeColor(Color.Red)
-                    1 -> borderView.changeColor(Color.Yellow)
-                    2 -> borderView.changeColor(Color.Green)
-                }
+                verificationSamplesFlow.value = it
             }
         }
     }
 
-    init {
-        startFeedback()
-    }
 }

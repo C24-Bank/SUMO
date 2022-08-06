@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 internal class ScanLogic(
     private val imageAnalyzer: ImageAnalyzer,
-    private val verifier: Verifier
+    private val verifier: Verifier,
 ) {
 
     private val mutableCollectedTextFlow = MutableStateFlow<String?>(null)
@@ -51,6 +51,9 @@ internal class ScanLogic(
 //                Log.e("ExampleApp", "scanlogic verified: $it")
             }
         }
+//        coroutineScope.launch {
+////            feedbackHelper.startFeedback()
+//        }
     }
 
     fun collectIsFullyVerifiedStatus(coroutineScope: CoroutineScope) {

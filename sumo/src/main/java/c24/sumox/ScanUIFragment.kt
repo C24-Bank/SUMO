@@ -22,6 +22,8 @@ class ScanUIFragment(
 
     private val scanLogic = scanView.getScanLogic()
 
+    private val feedbackHelper = scanView.getFeedbackHelper()
+
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
 
     var recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
@@ -45,13 +47,25 @@ class ScanUIFragment(
         }
     }
 
+     fun fetchVerificationCountStatus(lifecycleCoroutineScope: CoroutineScope){
+         lifecycleCoroutineScope.launch {
+
+             feedbackHelper.startFeedback(this)
+             feedbackHelper.samplesFlow.collectLatest {
+                 Log.e("ExampleApp/feedback:", "verifications tatus : $it")
+                 scanView.getBorderView().listenToVerificationStatus(it)
+
+             }
+         }
+
+    }
+
     fun fetchRecognizedText(lifecycleCoroutineScope: CoroutineScope){
         lifecycleCoroutineScope.launch {
             scanLogic.apply {
                 collectRecognizedText(this@launch)
                 collectedTextFlow.collectLatest {
                     mutableRecognizedTextFlow.value = it
-//                    Log.e("ExampleApp","Scanui fragment text: $it")
                 }
 
 
@@ -63,7 +77,6 @@ class ScanUIFragment(
         lifecycleCoroutineScope.launch {
             scanLogic.apply {
                 collectVerifiedText(this@launch)
-
                 confirmedTextFlow.collectLatest {
                     mutableVerifiedTextFlow.value = it
 //                    Log.e("ExampleApp", "Scanui fragment verified code: $it")

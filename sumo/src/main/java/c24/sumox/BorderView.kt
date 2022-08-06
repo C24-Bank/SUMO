@@ -33,21 +33,21 @@ import kotlinx.coroutines.runBlocking
 class BorderView(
     private var width: Dp? = null,
     private var height: Dp = 200.dp,
-    private var color: Color = Color.Red,
+    private var color: Color = Color.White,
     private var style: Stroke?= null,
-    private var modifier: Modifier? = null
+    private var modifier: Modifier? = null,
 //TODO: drawRoundRect parameter
 ) {
 
-    private val borderColor = MutableStateFlow(Color.Red)
-
+    private val borderColor = MutableStateFlow(color)
+    private val startingBorderColor = color
     private val coordFlow = MutableStateFlow<LayoutCoordinates?>(null)
     val coordinatesFlow = coordFlow.asSharedFlow()
 
 
+
     fun changeColor(color: Color) {
             borderColor.value = color
-
     }
 
     @Composable
@@ -85,6 +85,16 @@ class BorderView(
 
 
     }
+
+     fun listenToVerificationStatus(verificationStatus: Int){
+        when(verificationStatus) {
+            -1 -> changeColor(color)
+            0 -> changeColor(Color.Red)
+            1 -> changeColor(Color.Yellow)
+            else -> changeColor(Color.Green)
+        }
+    }
+
 
     private fun setModifier() {
         if (modifier == null) {
