@@ -1,6 +1,5 @@
 package c24.sumox
 
-import android.content.res.Resources
 import android.graphics.*
 import android.media.Image
 import android.os.SystemClock
@@ -11,22 +10,20 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 internal class ImageAnalyzer : ImageAnalysis.Analyzer {
     //TODO: Check if needed here what
     var lastAnalyzedTimestamp = 0L
-    private val ANALYSIS_DELAY_MS = 1000
+     var analysisDelay = 1000
     private val INVALID_TIME = -1L
     private var lastAnalysisTime = INVALID_TIME
     private var recognizer: TextRecognizer
     lateinit var  verifier: Verifier
+    var sampleCount = 2
 
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
     val recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
@@ -49,7 +46,7 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         //TODO: regex and sample count set manually. Make verifier nullable
         verifier = Verifier(
             pattern = Regex("""Code\s\d{10}"""),
-            sampleCount = 2
+            sampleCount = sampleCount
         )
 
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -95,7 +92,7 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         //TODO: Check format here before
         val bitmapProxy = image.image?.toBitmap()
         // process Image with tesseract
-        if (lastAnalysisTime != INVALID_TIME && (now - lastAnalysisTime < ANALYSIS_DELAY_MS)) {
+        if (lastAnalysisTime != INVALID_TIME && (now - lastAnalysisTime < analysisDelay)) {
             image.close();
             return
         }

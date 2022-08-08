@@ -16,7 +16,7 @@ import c24.sumox.*
 
 class ExampleScans() {
 
-    val scanWithDefaultSettings = Scan.Builder()
+    val scanWithDefaultSettings = Scan.Builder().setSampleCount(2).setAnalysisDelay(500)
 
 
     val scanWithCustomView = Scan.Builder().setCustomView {

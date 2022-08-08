@@ -77,7 +77,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.gblinkin'
                 artifactId = 'sumo'
-                version = '0.0.1'
+                version = '0.0.3'
             }
         }
     }

@@ -26,7 +26,7 @@ class Scan(
     private var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
 
-    private  var feedbackHelper: FeedbackHelper
+    private var feedbackHelper: FeedbackHelper
 
     private var customView: (@Composable () -> Unit)? = null
 
@@ -79,9 +79,11 @@ class Scan(
     class Builder {
 
         private var imageAnalyzer = ImageAnalyzer()
+
         // -------- Logic ---------
         private var feedbackHelper = FeedbackHelper(imageAnalyzer)
-        private var scanLogic = ScanLogic(imageAnalyzer,imageAnalyzer.verifier)
+        private var scanLogic = ScanLogic(imageAnalyzer, imageAnalyzer.verifier)
+
         // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
@@ -101,6 +103,9 @@ class Scan(
                 x = x, y = y, width = width, height = height
             )
         }
+
+        fun setAnalysisDelay(delay: Int) = apply { this.imageAnalyzer.analysisDelay = delay }
+        fun setSampleCount(count: Int) = apply { this.imageAnalyzer.sampleCount = count }
 
         fun setCustomView(customView: @Composable () -> Unit = {}) = apply {
             this.customView = customView
