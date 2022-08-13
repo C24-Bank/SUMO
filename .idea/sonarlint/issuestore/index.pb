@@ -22,5 +22,7 @@ S
 settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 b
 2app/src/main/java/c24/sumo_example/MainActivity.kt,0/4/04163bdc7ebc343a7a5c4bb0c67e51be9681498a
-Y
-)sumo/src/main/java/c24/sumox/ScanLogic.kt,a/8/a88568a3ecc2592a7f59e6563a8cc0b4e990de25
+@
+app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
+Z
+*sumo/src/main/java/c24/sumox/BorderView.kt,b/8/b864e9fe88cf25e7299a039a86db49e0a108fbb2

@@ -26,7 +26,6 @@ class Scan(
     private var descriptionView: @Composable () -> Unit = {}
     private var composedView: @Composable () -> Unit = {}
 
-    private var feedbackHelper: FeedbackHelper
 
     private var customView: (@Composable () -> Unit)? = null
 
@@ -39,7 +38,6 @@ class Scan(
 
 
         customView = builder.getCustomView()
-        feedbackHelper = builder.getFeedbackHelper()
         if (customView == null) {
             borderView = {
                 builder.getBorderView().Rahmen()
@@ -77,20 +75,16 @@ class Scan(
     }
 
     class Builder {
-
         private var imageAnalyzer = ImageAnalyzer()
 
         // -------- Logic ---------
-        private var feedbackHelper = FeedbackHelper(imageAnalyzer)
         private var scanLogic = ScanLogic(imageAnalyzer, imageAnalyzer.verifier)
-
         // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
         private var descriptionView = DescriptionView()
         private var titleView = TitleView()
         private var customView: (@Composable () -> Unit)? = null
-
 
         /* Setters */
         fun setBorderView(borderView: BorderView) = apply { this.borderView = borderView }
@@ -103,6 +97,7 @@ class Scan(
                 x = x, y = y, width = width, height = height
             )
         }
+        fun setPattern(pattern: Regex) = apply { this.imageAnalyzer.verifier.pattern = pattern }
 
         fun setAnalysisDelay(delay: Int) = apply { this.imageAnalyzer.analysisDelay = delay }
         fun setSampleCount(count: Int) = apply { this.imageAnalyzer.sampleCount = count }
@@ -114,7 +109,6 @@ class Scan(
         private fun setCameraView(cameraView: CameraView) = apply { this.cameraView = cameraView }
 
         /* Getters */
-        fun getFeedbackHelper() = feedbackHelper
         internal fun getScanLogic() = scanLogic
 
         fun getBorderView() = borderView

@@ -24,6 +24,7 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
     private var recognizer: TextRecognizer
     lateinit var  verifier: Verifier
     var sampleCount = 2
+    var pattern = Regex("""\d{10}""")
 
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
     val recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
@@ -45,7 +46,7 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
     init {
         //TODO: regex and sample count set manually. Make verifier nullable
         verifier = Verifier(
-            pattern = Regex("""Code\s\d{10}"""),
+            pattern = pattern,
             sampleCount = sampleCount
         )
 

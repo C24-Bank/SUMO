@@ -24,6 +24,9 @@ internal class ScanLogic(
     private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
     val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
 
+    private val verificationSamplesFlow = MutableStateFlow<Int>(-1)
+    val samplesFlow = verificationSamplesFlow.asSharedFlow()
+
     init {
 //        GlobalScope.launch {
 //            verifier.verifiedTextFlow.collectLatest {
@@ -61,6 +64,15 @@ internal class ScanLogic(
             verifier.isFullyVerifiedFlow.collectLatest {
                 mutableIsFullyVerifiedFlow.value = it
 //                Log.e("ExampleApp", "scanlogic verified bool: $it")
+            }
+        }
+    }
+
+    fun collectVerificationCount(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
+            imageAnalyzer.verifier.samplesFlow.collectLatest {
+                Log.e("Feedbackhelper:", " collected: $it")
+                verificationSamplesFlow.value = it
             }
         }
     }

@@ -17,6 +17,7 @@ import c24.sumox.*
 class ExampleScans() {
 
     val scanWithDefaultSettings = Scan.Builder().setSampleCount(2).setAnalysisDelay(500)
+        .setPattern(Regex("""Code\s\d{10}"""))
 
 
     val scanWithCustomView = Scan.Builder().setCustomView {
@@ -27,7 +28,7 @@ class ExampleScans() {
             textAlign = TextAlign.Center,
             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
-    }
+    }.setPattern(Regex("""Code\s\d{10}"""))
 
     val scanExampleReceipt = Scan.Builder()
         .setTitleView(
@@ -48,6 +49,6 @@ class ExampleScans() {
                 titleTextAlign = TextAlign.Center,
                 cornerRadius = CornerRadius(0f, 0f)
             )
-        )
+        ).setPattern(Regex("""Code\s\d{10}"""))
 
 }

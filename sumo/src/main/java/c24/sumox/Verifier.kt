@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 internal class Verifier(
-    private val pattern: Regex,
+    var pattern: Regex ,
     private val sampleCount: Int
 ) {
     var hasVerificationStarted: Boolean = false

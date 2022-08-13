@@ -55,9 +55,9 @@ class ScanExampleFragment : Fragment() {
         }
         lifecycleScope.launch {
             scanModuleFragment.fetchVerificationCountStatus(this)
-            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
-//                Log.e("ExampleApp/feedback:", "verifications tatus : $it")
-            }
+//            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
+////                Log.e("ExampleApp/feedback:", "verifications tatus : $it")
+//            }
 
         }
 
