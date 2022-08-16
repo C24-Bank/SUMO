@@ -19,7 +19,8 @@ A simple implementation could look like this:
 
 Step 1:
 
-Create a scan configuration with the parameters and ui you need.
 Think about whether you want a verification mechanism and what data you want to verify.
 If you have data to want to make sure to recognize correctly create a Regex which matches your data.
+
+![regex](./regex.png)
 
