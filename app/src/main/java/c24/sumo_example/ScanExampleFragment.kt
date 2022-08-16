@@ -54,7 +54,7 @@ class ScanExampleFragment : Fragment() {
         }
         lifecycleScope.launch {
             scanModuleFragment.fetchVerificationCountStatus(this)
-            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
+            scanModuleFragment.verificationCount.collectLatest {
                 Log.e(LOG_EXAMPLE_APP , "verifications tatus : $it")
 
             }
@@ -64,7 +64,6 @@ class ScanExampleFragment : Fragment() {
 
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.scanFragmentContainer, scanModuleFragment).commit()
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scan, container, false)
     }
 
@@ -73,6 +72,7 @@ class ScanExampleFragment : Fragment() {
         val scanFragment1 = ExampleScans().scanWithDefaultSettings
         val scanFragment2 = ExampleScans().scanExampleReceipt
         val scanFragment3 = ExampleScans().scanWithCustomView
+
 
         val scanConfig = scanFragment1
         scanModuleFragment = scanConfig.build() as ScanUIFragment

@@ -18,7 +18,7 @@ import c24.sumox.*
 
 class ExampleScans() {
 
-    val codeRegex = Regex("""Code\s\d{10}""")
+    private val codeRegex = Regex("""Code\s\d{10}""")
     val scanWithDefaultSettings = Scan.Builder().setSampleCount(2).setScanFrequencyDelay(500)
         .setPattern(codeRegex)
 

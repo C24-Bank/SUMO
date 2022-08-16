@@ -57,12 +57,12 @@ class BorderView(
 
     }
 
-     fun listenToVerificationStatus(verificationStatus: Int){
+     fun listenToVerificationStatus(verificationStatus: Int,sampleCount: Int){
         when(verificationStatus) {
             -1 -> changeColor(color)
             0 -> changeColor(Color.Red)
             1 -> changeColor(Color.Yellow)
-            else -> changeColor(Color.Green)
+            sampleCount -> changeColor(Color.Green)
         }
     }
 

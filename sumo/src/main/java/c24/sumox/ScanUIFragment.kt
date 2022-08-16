@@ -21,14 +21,16 @@ class ScanUIFragment(
 
 
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
-
     var recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
+
     private val mutableVerifiedTextFlow = MutableStateFlow<String?>(null)
-
     var verifiedTextFlow = mutableVerifiedTextFlow.asSharedFlow()
-    private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
 
+    private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
     val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
+
+    private val mutableVerificationCountFlow = MutableStateFlow(0)
+    val verificationCount = mutableVerificationCountFlow.asSharedFlow()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +46,21 @@ class ScanUIFragment(
 
     fun fetchVerificationCountStatus(lifecycleCoroutineScope: CoroutineScope) {
         lifecycleCoroutineScope.launch {
-
+            var isVerified = false
+            val sampleCount = scanView.getSampleCount()
             scanLogic.apply {
                 collectVerificationCount(this@launch)
                 samplesFlow.collectLatest {
-                    scanView.getBorderView().listenToVerificationStatus(it)
+
+                    mutableVerificationCountFlow.value = it
+
+                    if (!isVerified) {
+                        scanView.getBorderView()
+                            .listenToVerificationStatus(it, sampleCount)
+                    }
+                    if (it == sampleCount) {
+                        isVerified = true
+                    }
                 }
             }
         }

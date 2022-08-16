@@ -51,6 +51,7 @@ class Scan(
 
         // -------- Logic ---------
         private var scanLogic = ScanLogic(imageAnalyzer)
+
         // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
@@ -66,7 +67,9 @@ class Scan(
         fun setTitleView(titleView: TitleView) = apply { this.titleView = titleView }
         fun setPattern(pattern: Regex) = apply { this.imageAnalyzer.verifier.pattern = pattern }
 
-        fun setScanFrequencyDelay(delay: Int) = apply { this.imageAnalyzer.scanFrequencyDelay = delay }
+        fun setScanFrequencyDelay(delay: Int) =
+            apply { this.imageAnalyzer.scanFrequencyDelay = delay }
+
         fun setSampleCount(count: Int) = apply { this.imageAnalyzer.sampleCount = count }
 
         fun setCustomView(customView: @Composable () -> Unit = {}) = apply {
@@ -83,7 +86,7 @@ class Scan(
         fun getDescriptionView() = descriptionView
         fun getTitleView() = titleView
         fun getCustomView() = customView
-
+        fun getSampleCount() = imageAnalyzer.sampleCount
 
         fun build() = Scan(this).scanUIFragment
         fun createScanObject() = Scan(this)
