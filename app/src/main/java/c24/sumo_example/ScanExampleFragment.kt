@@ -68,7 +68,7 @@ class ScanExampleFragment : Fragment() {
     }
 
     private fun buildScan() {
-
+        // Different Examples with custom parameters
         val scanFragment1 = ExampleScans().scanWithDefaultSettings
         val scanFragment2 = ExampleScans().scanExampleReceipt
         val scanFragment3 = ExampleScans().scanWithCustomView

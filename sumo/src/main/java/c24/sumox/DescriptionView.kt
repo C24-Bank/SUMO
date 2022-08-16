@@ -26,9 +26,8 @@ class DescriptionView(
 ) {
 
     @Composable
-    fun createView() {
+    fun CreateView() {
         setModifier()
-
 
         Box(modifier = modifier!!.fillMaxWidth()) {
             Canvas(modifier!!) {

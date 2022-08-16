@@ -22,7 +22,7 @@ class TitleView(
 ) {
 
     @Composable
-    fun createView() {
+    fun CreateView() {
         if (isVisible) {
             setModifier()
             Text(

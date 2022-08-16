@@ -3,7 +3,6 @@ package c24.sumox
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.fragment.app.Fragment
 
 class Scan(
@@ -19,8 +18,7 @@ class Scan(
 
     private var customView: (@Composable () -> Unit)? = null
 
-    private lateinit var scanUIFragment: Fragment
-    private var borderViewGloballyPositionedModifier: LayoutCoordinates? = null
+    private var scanUIFragment: Fragment
 
     init {
         scanUIFragment = ScanUIFragment(this.builder)
@@ -32,11 +30,11 @@ class Scan(
 
             }
 
-            descriptionView = { builder.getDescriptionView().createView() }
-            titleView = { builder.getTitleView().createView() }
+            descriptionView = { builder.getDescriptionView().CreateView() }
+            titleView = { builder.getTitleView().CreateView() }
         }
 
-        composedView = { stitchView() }
+        composedView = { StitchView() }
 
         cameraView = {
             builder.getCameraView().setCustomView(composedView)
@@ -47,9 +45,8 @@ class Scan(
     }
 
     class Builder {
-        private var imageAnalyzer = ImageAnalyzer()
-
         // -------- Logic ---------
+        private var imageAnalyzer = ImageAnalyzer()
         private var scanLogic = ScanLogic(imageAnalyzer)
 
         // --------- User Interface -----------
@@ -95,9 +92,7 @@ class Scan(
     }
 
     @Composable
-    fun stitchView() {
-        //Todo: if custom view is given dont do this
-
+    fun StitchView() {
         Box(modifier = Modifier.fillMaxSize()) {
             if (customView == null) {
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -111,7 +106,6 @@ class Scan(
 
         }
     }
-
 
 }
 

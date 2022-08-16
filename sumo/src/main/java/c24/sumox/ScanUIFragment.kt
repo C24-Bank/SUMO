@@ -26,7 +26,7 @@ class ScanUIFragment(
     private val mutableVerifiedTextFlow = MutableStateFlow<String?>(null)
     var verifiedTextFlow = mutableVerifiedTextFlow.asSharedFlow()
 
-    private val mutableIsFullyVerifiedFlow = MutableStateFlow<Boolean>(false)
+    private val mutableIsFullyVerifiedFlow = MutableStateFlow(false)
     val isFullyVerifiedFlow = mutableIsFullyVerifiedFlow.asSharedFlow()
 
     private val mutableVerificationCountFlow = MutableStateFlow(0)

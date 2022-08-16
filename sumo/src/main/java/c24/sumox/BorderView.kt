@@ -68,12 +68,12 @@ class BorderView(
 
 
     private fun setModifier() {
-        // check if custom width or height is set
         if (modifier == null) {
             modifier = Modifier
                 .padding(bottom = 200.dp, top = 100.dp, start = 20.dp, end = 20.dp)
 
         }
+        // check if custom width or height is set
         modifier = when {
             width != null -> modifier!!.width(width!!)
             else -> modifier!!

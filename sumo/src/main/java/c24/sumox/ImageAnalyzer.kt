@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import java.io.ByteArrayOutputStream
 
 internal class ImageAnalyzer : ImageAnalysis.Analyzer {
+    private val invalidTime = -1L
+    private var previousAnalyzed = invalidTime
     var scanFrequencyDelay = 1000
-    private val INVALID_TIME = -1L
-    private var lastAnalysisTime = INVALID_TIME
     private var recognizer: TextRecognizer
     var  verifier: Verifier
     var sampleCount = 2
@@ -49,13 +49,13 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         if (bitmapProxy != null) {
             processImageWithMLKit(bitmapProxy)
         }
-        lastAnalysisTime = now;
+        previousAnalyzed = now;
         image.close()
 
     }
 
     private fun skipFrame(now: Long) =
-        lastAnalysisTime != INVALID_TIME && (now - lastAnalysisTime < scanFrequencyDelay)
+        previousAnalyzed != invalidTime && (now - previousAnalyzed < scanFrequencyDelay)
 
 
     private fun Image.toBitmap(): Bitmap {
@@ -81,13 +81,11 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
 
         val image = InputImage.fromBitmap(bitmap, 0)
         recognizer.process(image).addOnSuccessListener { visionText ->
-            Log.e("OCR: ", "Success process")
-            Log.e("OCR: text ", " ${visionText.text}")
             setAllRecognizedText(visionText.text)
             startVerifier(visionText.text)
 
         }.addOnFailureListener { e ->
-            Log.e("OCR: ", "FAILED process")
+            Log.e("Sumo/Analyzer: ", "ML Kit failed to process bitmap")
         }
     }
 

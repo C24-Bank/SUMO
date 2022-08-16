@@ -1,6 +1,5 @@
 package c24.sumox
 
-import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -13,7 +12,7 @@ internal class Verifier(
     // first Match which has to be verified
     private var recognizedMatch: String? = null
 
-    // how often verifcation was hit in a row. Stop when verifcation count == sampleCount
+    // how often verifcation was hit in a row. Fully verified when verifcation count == sampleCount
     private var verificationCount: Int = 0
 
     // true when sampleCount amount was hit in a row
@@ -31,15 +30,12 @@ internal class Verifier(
     fun startVerification(recognizedText: String) {
         // check if pattern was found
         var result = pattern.containsMatchIn(recognizedText)
-        Log.e("Verifier: ", "Result Regex: $result")
-        Log.e("Verifier: ", "recognized Text : $recognizedText")
         // if true set recognizedMatch
         if (result) {
             recognizedMatch = setRecognizedMatch(recognizedText)
             hasVerificationStarted = true
             verificationSamplesFlow.value = 1
             // loop until SampleCount matches in a row are hit
-            Log.e("Verifier: ", "Match string: $recognizedMatch")
         } else {
             if(verificationSamplesFlow.value >= 1){
 
@@ -50,22 +46,21 @@ internal class Verifier(
 
     fun confirmVerification(nextRecognizedText: String) {
 
-        var nextRecognizedMatch = setRecognizedMatch(nextRecognizedText)
+        val nextRecognizedMatch = setRecognizedMatch(nextRecognizedText)
         if (nextRecognizedMatch.equals(recognizedMatch)) {
             verificationCount++
-            Log.e("Verifier: ","verifcation count -> $verificationCount")
             if (verificationCount >= sampleCount) {
                 mutableVerifiedTextFlow.value = recognizedMatch
                 fullyVerified = true
                 mutableIsFullyVerifiedFlow.value = true
             }
         } else {
-            resetVerfication()
+            resetVerification()
         }
         verificationSamplesFlow.value = verificationCount
     }
 
-    private fun resetVerfication() {
+    private fun resetVerification() {
         verificationCount = 0
         hasVerificationStarted = false
         mutableIsFullyVerifiedFlow.value = false
@@ -74,9 +69,7 @@ internal class Verifier(
 
 
     private fun setRecognizedMatch(recognizedText: String): String? {
-        var foundString = pattern.find(recognizedText)
-        val recognizedMatch = foundString?.value
-        Log.e("Verifier: ", "matched String is: ${foundString?.value}")
-        return recognizedMatch
+        val foundString = pattern.find(recognizedText)
+        return foundString?.value
     }
 }
