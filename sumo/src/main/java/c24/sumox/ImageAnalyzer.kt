@@ -13,38 +13,20 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 internal class ImageAnalyzer : ImageAnalysis.Analyzer {
-    //TODO: Check if needed here what
-    var lastAnalyzedTimestamp = 0L
-     var analysisDelay = 1000
+    var scanFrequencyDelay = 1000
     private val INVALID_TIME = -1L
     private var lastAnalysisTime = INVALID_TIME
     private var recognizer: TextRecognizer
-    lateinit var  verifier: Verifier
+    var  verifier: Verifier
     var sampleCount = 2
     var pattern = Regex("""\d{10}""")
 
     private val mutableRecognizedTextFlow = MutableStateFlow<String?>(null)
     val recognizedTextFlow = mutableRecognizedTextFlow.asSharedFlow()
 
-    private fun ByteBuffer.toByteArray(): ByteArray {
-        rewind()    // Rewind the buffer to zero
-        val data = ByteArray(remaining())
-        get(data)   // Copy the buffer into a byte array
-        return data // Return the byte array
-    }
-
-    // set these to crop the bitmap to only the border view captured image
-    var cropX: Int? = null
-    var cropY: Int? = null
-    var cropHeight: Int? = null
-    var cropWidth: Int? = null
-
-
     init {
-        //TODO: regex and sample count set manually. Make verifier nullable
         verifier = Verifier(
             pattern = pattern,
             sampleCount = sampleCount
@@ -53,55 +35,18 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
 
-    fun setCropParameters(x: Int, y: Int, width: Int, height: Int) {
-        cropX = x
-        cropY = y
-        cropHeight = height
-        cropWidth = width
-        Log.e(
-            "coords: ",
-            "Crop coords = height: $cropHeight width: $cropWidth "
-        )
-        Log.e(
-            "coords: ",
-            "Crop coords = x: $cropX y: $cropY "
-        )
-    }
-
-    fun cropBitmap(bitmap: Bitmap): Bitmap? {
-        var croppedBitmap: Bitmap? = null
-        Log.e("bitmapOP: ", "$bitmap")
-        cropX?.let {
-            croppedBitmap =
-                Bitmap.createBitmap(
-                    bitmap,
-                    cropX!!,
-                    cropY!!,
-                    cropWidth!!,
-                    cropHeight!!
-                )
-        }
-
-        return croppedBitmap
-    }
 
     @androidx.camera.core.ExperimentalGetImage
     override fun analyze(image: ImageProxy) {
         if (image.image == null) return
 
         val now = SystemClock.uptimeMillis();
-        //TODO: Check format here before
         val bitmapProxy = image.image?.toBitmap()
-        // process Image with tesseract
-        if (lastAnalysisTime != INVALID_TIME && (now - lastAnalysisTime < analysisDelay)) {
+        if (skipFrame(now)) {
             image.close();
             return
         }
         if (bitmapProxy != null) {
-            //crop image before if needed:
-            // Todo: make sure not null
-//            val croppedBitmap = cropBitmap(bitmapProxy)!!
-//            processImageWithMLKit(croppedBitmap)
             processImageWithMLKit(bitmapProxy)
         }
         lastAnalysisTime = now;
@@ -109,24 +54,13 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
 
     }
 
-    /*
-     *IMPORTANT conversion:
-     * IF  Format is 256:
-     */
-    fun ImageProxy.convertImageProxyToBitmap(): Bitmap {
-        val buffer = planes[0].buffer
-        buffer.rewind()
-        val bytes = ByteArray(buffer.capacity())
-        buffer.get(bytes)
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    }
+    private fun skipFrame(now: Long) =
+        lastAnalysisTime != INVALID_TIME && (now - lastAnalysisTime < scanFrequencyDelay)
 
-    /*
-     if Format is 35
-     */
-    fun Image.toBitmap(): Bitmap {
-        val yBuffer = planes[0].buffer // Y
-        val vuBuffer = planes[2].buffer // VU
+
+    private fun Image.toBitmap(): Bitmap {
+        val yBuffer = planes[0].buffer
+        val vuBuffer = planes[2].buffer
 
         val ySize = yBuffer.remaining()
         val vuSize = vuBuffer.remaining()
@@ -143,34 +77,29 @@ internal class ImageAnalyzer : ImageAnalysis.Analyzer {
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
-    fun processImageWithMLKit(bitmap: Bitmap) {
-        // Use a bitmap as InputImage
+    private fun processImageWithMLKit(bitmap: Bitmap) {
 
         val image = InputImage.fromBitmap(bitmap, 0)
         recognizer.process(image).addOnSuccessListener { visionText ->
             Log.e("OCR: ", "Success process")
             Log.e("OCR: text ", " ${visionText.text}")
             setAllRecognizedText(visionText.text)
-            if (verifier != null) {
-                startVerifier(visionText.text)
-            }
+            startVerifier(visionText.text)
 
         }.addOnFailureListener { e ->
             Log.e("OCR: ", "FAILED process")
         }
     }
 
-    fun setAllRecognizedText(text: String){
+    private fun setAllRecognizedText(text: String){
         mutableRecognizedTextFlow.value = text
-//        Log.e("ExampleApp","Analyzer: ${mutableRecognizedTextFlow.value }")
     }
+
     private fun startVerifier(visionText: String) {
-        if (verifier?.hasVerificationStarted == true) {
-            Log.e("Verifier: (analyzer)", "confirm verification")
-            verifier?.confirmVerification(visionText)
+        if (verifier.hasVerificationStarted) {
+            verifier.confirmVerification(visionText)
         } else {
-            Log.e("Verifier: (analyzer)", "start verification")
-            verifier?.startVerification(visionText)
+            verifier.startVerification(visionText)
         }
     }
 

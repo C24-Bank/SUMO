@@ -1,8 +1,6 @@
 package c24.sumox
 
-import android.content.ContentValues
 import android.content.Context
-import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -25,59 +23,55 @@ class CameraView(
     private var imageAnalyzer: ImageAnalysis.Analyzer
 ) {
 
-    var cameraExecutor: ExecutorService = initExecutor()
+    var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     var view: @Composable () -> Unit = {}
 
     fun setCustomView(customView: @Composable () -> Unit = {}) {
         this.view = customView
     }
 
-    private fun setupAnalyzerPrerequisites(context: Context, lifecycleOwner: LifecycleOwner,preview: Preview){
+    private fun setupAnalyzerPrerequisites(
+        context: Context,
+        lifecycleOwner: LifecycleOwner,
+        preview: Preview
+    ) {
+        // get instance of the camera provider to attach listener
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
         cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
+            // Unbind all Use Cases and bind the custom scan analyzer
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner, cameraSelector, preview, analyzer()
+            )
 
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner, cameraSelector, preview, Analyzer()
-                )
-
-            } catch (exc: Exception) {
-                Log.e(ContentValues.TAG, "Use case binding failed", exc)
-            }
         }, ContextCompat.getMainExecutor(context))
 
     }
+
     @Composable
     fun StartCamera() {
-       val context = LocalContext.current
+        val context = LocalContext.current
         val lifecycleOwner = LocalLifecycleOwner.current
 
-        //TODO test if this works
         val preview = Preview.Builder().build()
         val previewView = remember { PreviewView(context) }
-        setupAnalyzerPrerequisites(context, lifecycleOwner,preview)
+        setupAnalyzerPrerequisites(context, lifecycleOwner, preview)
 
         preview.setSurfaceProvider(previewView.surfaceProvider)
 
-        //TODO: Here custom view erlauebbn
-        Box(modifier = Modifier.fillMaxSize()
-            ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
             AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
-            //ToDO: customize UI here
             view()
         }
 
     }
 
-    //TODO: eigenen ImageAnalyzer erstellen lassen
-    private fun Analyzer(): ImageAnalysis {
+    private fun analyzer(): ImageAnalysis {
         val imageAnalyzer = ImageAnalysis.Builder()
             .build()
             .also {
@@ -86,12 +80,6 @@ class CameraView(
                 )
             }
         return imageAnalyzer
-    }
-
-
-    private fun initExecutor(): ExecutorService {
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        return cameraExecutor
     }
 }
 

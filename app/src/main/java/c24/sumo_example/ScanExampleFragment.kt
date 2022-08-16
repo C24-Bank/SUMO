@@ -27,37 +27,37 @@ class ScanExampleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        lifecycleScope.launch {
-//            scanModuleFragment.fetchScanData(this)
-//
-//        }
         lifecycleScope.launch {
             scanModuleFragment.fetchRecognizedText(this)
 
+
             scanModuleFragment.recognizedTextFlow.collectLatest {
-//                Log.e("ExampleApp:", "collected Text : $it")
+                Log.e(LOG_EXAMPLE_APP, "collected Text : $it")
+
             }
         }
         lifecycleScope.launch {
             scanModuleFragment.fetchConfirmedText(this)
-
             scanModuleFragment.verifiedTextFlow.collectLatest {
-//                Log.e("ExampleApp:", "verified Text : $it")
+                Log.e(LOG_EXAMPLE_APP, "verified Text : $it")
+
+
             }
         }
 
         lifecycleScope.launch {
             scanModuleFragment.fetchVerificationStatus(this)
             scanModuleFragment.isFullyVerifiedFlow.collectLatest {
-//                Log.e("ExampleApp:", "isfully verified : $it")
+                Log.e(LOG_EXAMPLE_APP , "isfully verified : $it")
             }
 
         }
         lifecycleScope.launch {
             scanModuleFragment.fetchVerificationCountStatus(this)
-//            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
-////                Log.e("ExampleApp/feedback:", "verifications tatus : $it")
-//            }
+            scanModuleFragment.isFullyVerifiedFlow.collectLatest {
+                Log.e(LOG_EXAMPLE_APP , "verifications tatus : $it")
+
+            }
 
         }
 
@@ -74,6 +74,11 @@ class ScanExampleFragment : Fragment() {
         val scanFragment2 = ExampleScans().scanExampleReceipt
         val scanFragment3 = ExampleScans().scanWithCustomView
 
-        scanModuleFragment = scanFragment1.build() as ScanUIFragment
+        val scanConfig = scanFragment1
+        scanModuleFragment = scanConfig.build() as ScanUIFragment
+    }
+
+    companion object {
+        const val LOG_EXAMPLE_APP = "ExampleApp: "
     }
 }

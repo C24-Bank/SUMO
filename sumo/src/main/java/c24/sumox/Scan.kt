@@ -1,20 +1,10 @@
 package c24.sumox
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
 import androidx.fragment.app.Fragment
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class Scan(
     var builder: Builder
@@ -34,30 +24,12 @@ class Scan(
 
     init {
         scanUIFragment = ScanUIFragment(this.builder)
-        //TODO init functions
-
 
         customView = builder.getCustomView()
         if (customView == null) {
             borderView = {
-                builder.getBorderView().Rahmen()
+                builder.getBorderView().Border()
 
-            }
-            GlobalScope.launch {
-                builder.getBorderView().coordinatesFlow.collectLatest {
-                    if (it != null) {
-
-                        borderViewGloballyPositionedModifier = it
-                        borderViewGloballyPositionedModifier?.let {
-                            builder.setImageAnalyzerCropParameters(
-                                borderViewGloballyPositionedModifier?.positionInRoot()?.x!!.toInt(),
-                                borderViewGloballyPositionedModifier?.positionInRoot()?.y!!.toInt(),
-                                borderViewGloballyPositionedModifier?.size?.width!!.toInt(),
-                                borderViewGloballyPositionedModifier?.size?.height!!.toInt()
-                            )
-                        }
-                    }
-                }
             }
 
             descriptionView = { builder.getDescriptionView().createView() }
@@ -65,7 +37,7 @@ class Scan(
         }
 
         composedView = { stitchView() }
-//        stitchView()
+
         cameraView = {
             builder.getCameraView().setCustomView(composedView)
             builder.getCameraView().StartCamera()
@@ -78,7 +50,7 @@ class Scan(
         private var imageAnalyzer = ImageAnalyzer()
 
         // -------- Logic ---------
-        private var scanLogic = ScanLogic(imageAnalyzer, imageAnalyzer.verifier)
+        private var scanLogic = ScanLogic(imageAnalyzer)
         // --------- User Interface -----------
         private var borderView = BorderView()
         private var cameraView = CameraView(imageAnalyzer = imageAnalyzer)
@@ -92,14 +64,9 @@ class Scan(
             apply { this.descriptionView = descriptionView }
 
         fun setTitleView(titleView: TitleView) = apply { this.titleView = titleView }
-        fun setImageAnalyzerCropParameters(x: Int, y: Int, width: Int, height: Int) {
-            imageAnalyzer.setCropParameters(
-                x = x, y = y, width = width, height = height
-            )
-        }
         fun setPattern(pattern: Regex) = apply { this.imageAnalyzer.verifier.pattern = pattern }
 
-        fun setAnalysisDelay(delay: Int) = apply { this.imageAnalyzer.analysisDelay = delay }
+        fun setScanFrequencyDelay(delay: Int) = apply { this.imageAnalyzer.scanFrequencyDelay = delay }
         fun setSampleCount(count: Int) = apply { this.imageAnalyzer.sampleCount = count }
 
         fun setCustomView(customView: @Composable () -> Unit = {}) = apply {

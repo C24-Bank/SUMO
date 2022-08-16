@@ -1,7 +1,6 @@
 package c24.sumox
 
 import android.util.Log
-import androidx.compose.ui.layout.LayoutCoordinates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -50,16 +49,13 @@ internal class Verifier(
     }
 
     fun confirmVerification(nextRecognizedText: String) {
-        //verify first match with current
-        //todo: get livedata from analyzer
+
         var nextRecognizedMatch = setRecognizedMatch(nextRecognizedText)
         if (nextRecognizedMatch.equals(recognizedMatch)) {
             verificationCount++
             Log.e("Verifier: ","verifcation count -> $verificationCount")
-            // verification is done when verifcation equals given sample count
             if (verificationCount >= sampleCount) {
                 mutableVerifiedTextFlow.value = recognizedMatch
-//                Log.e("exampleApp","verifier: ${mutableVerifiedTextFlow.value}")
                 fullyVerified = true
                 mutableIsFullyVerifiedFlow.value = true
             }

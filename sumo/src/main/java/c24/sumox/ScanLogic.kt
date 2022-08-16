@@ -1,10 +1,6 @@
 package c24.sumox
 
-import android.provider.Settings
-import android.util.Log
-import androidx.camera.core.ImageAnalysis
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -12,7 +8,7 @@ import kotlinx.coroutines.launch
 
 internal class ScanLogic(
     private val imageAnalyzer: ImageAnalyzer,
-    private val verifier: Verifier,
+
 ) {
 
     private val mutableCollectedTextFlow = MutableStateFlow<String?>(null)
@@ -27,21 +23,11 @@ internal class ScanLogic(
     private val verificationSamplesFlow = MutableStateFlow<Int>(-1)
     val samplesFlow = verificationSamplesFlow.asSharedFlow()
 
-    init {
-//        GlobalScope.launch {
-//            verifier.verifiedTextFlow.collectLatest {
-//                mutableConfirmedTextFlow.value = it
-//                Log.e("ExampleApp","scanlogic verified: $it")
-//
-//            }
-//        }
-    }
 
     fun collectRecognizedText(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             imageAnalyzer.recognizedTextFlow.collectLatest {
                 mutableCollectedTextFlow.value = it
-//                Log.e("ExampleApp","scanlogic text: $it")
 
             }
         }
@@ -49,21 +35,16 @@ internal class ScanLogic(
 
     fun collectVerifiedText(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
-            verifier.verifiedTextFlow.collectLatest {
+            imageAnalyzer.verifier.verifiedTextFlow.collectLatest {
                 mutableConfirmedTextFlow.value = it
-//                Log.e("ExampleApp", "scanlogic verified: $it")
             }
         }
-//        coroutineScope.launch {
-////            feedbackHelper.startFeedback()
-//        }
     }
 
     fun collectIsFullyVerifiedStatus(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
-            verifier.isFullyVerifiedFlow.collectLatest {
+            imageAnalyzer.verifier.isFullyVerifiedFlow.collectLatest {
                 mutableIsFullyVerifiedFlow.value = it
-//                Log.e("ExampleApp", "scanlogic verified bool: $it")
             }
         }
     }
@@ -71,7 +52,6 @@ internal class ScanLogic(
     fun collectVerificationCount(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             imageAnalyzer.verifier.samplesFlow.collectLatest {
-                Log.e("Feedbackhelper:", " collected: $it")
                 verificationSamplesFlow.value = it
             }
         }

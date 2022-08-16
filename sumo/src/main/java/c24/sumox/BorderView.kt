@@ -1,6 +1,5 @@
 package c24.sumox
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -16,18 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
 
 
 class BorderView(
@@ -36,46 +25,28 @@ class BorderView(
     private var color: Color = Color.White,
     private var style: Stroke?= null,
     private var modifier: Modifier? = null,
-//TODO: drawRoundRect parameter
 ) {
 
     private val borderColor = MutableStateFlow(color)
-    private val startingBorderColor = color
-    private val coordFlow = MutableStateFlow<LayoutCoordinates?>(null)
-    val coordinatesFlow = coordFlow.asSharedFlow()
 
-
-
-    fun changeColor(color: Color) {
+    private fun changeColor(color: Color) {
             borderColor.value = color
     }
 
     @Composable
-    fun Rahmen() {
+    fun Border() {
         val myColor by borderColor.collectAsState()
-        //check if there is a custom width
         setModifier()
 
 
 
         Canvas(
-            modifier = modifier!!.onGloballyPositioned { layoutcoords ->
-                Log.e(
-                    "coords: ",
-                    "Layout coords = height: ${layoutcoords.size.height} width: ${layoutcoords.size.width} "
-                )
-                Log.e(
-                    "coords: ",
-                    "Layout coords = x: ${layoutcoords.positionInRoot().x} y: ${layoutcoords.positionInRoot().y} "
-                )
-                coordFlow.value = layoutcoords
-            }
+            modifier = modifier!!
         ) {
 
             drawRoundRect(
-                //            size = Size(width.toPx(), height.toPx()),
                 color = myColor,
-                style = Stroke(
+                style = style ?: Stroke(
                     width = 2.dp.toPx(),
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
                 ),
@@ -97,6 +68,7 @@ class BorderView(
 
 
     private fun setModifier() {
+        // check if custom width or height is set
         if (modifier == null) {
             modifier = Modifier
                 .padding(bottom = 200.dp, top = 100.dp, start = 20.dp, end = 20.dp)
